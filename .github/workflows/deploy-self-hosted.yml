@@ -9,7 +9,7 @@ on:
 jobs:
   deploy:
     name: Deploy
-    runs-on: [self-hosted, linux, production, arm64]
+    runs-on: [self-hosted, Linux, Production, ARM64]
     steps:
     - name: Docker Stack Deploy 
       run: docker stack deploy --prune --resolve-image always -c /deploy/articleviewer/docker-compose.yml articleviewer
