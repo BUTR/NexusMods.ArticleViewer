@@ -11,6 +11,11 @@ jobs:
     name: Deploy
     runs-on: [self-hosted, Linux, Production, ARM64]
     steps:
-    - name: Docker Stack Deploy 
-      run: docker stack deploy --prune --resolve-image always -c /deploy/articleviewer/docker-compose.yml articleviewer
-      shell: pwsh
+    - name: multiple command
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: docker stack deploy --prune --resolve-image always -c /deploy/articleviewer/docker-compose.yml articleviewer
