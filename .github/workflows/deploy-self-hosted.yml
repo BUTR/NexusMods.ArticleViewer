@@ -4,6 +4,7 @@ on:
   repository_dispatch:
     types:
       - deploy-docker-image
+  workflow_dispatch:
 
 jobs:
   deploy:
