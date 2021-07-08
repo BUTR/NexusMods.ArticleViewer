@@ -1,0 +1,40 @@
+﻿@page "/login"
+@using NexusMods.ArticleViewer.Client.Helpers
+@using NexusMods.ArticleViewer.Client.Extensions
+@inject NavigationManager _navigationManager
+@inject ILocalStorageService _localStorage
+@inject BackendAPIClient _backendApiClient
+
+<!--https://jsfiddle.net/StartBootstrap/amxr8n19/-->
+<div class="row">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+            <div class="card-body">
+                <h5 class="card-title text-center">Sign In</h5>
+                <form class="form-signin">
+                    <hr class="my-4">
+                    <div class="d-grid gap-2">
+                        <a class="btn btn-primary btn-lg text-uppercase" @onclick="OnDemoLogin" role="button">Demo</a>
+                        <a class="btn btn-secondary btn-lg text-uppercase" href="@AdministratorUrl" role="button">Administrator</a>
+                        <a class="btn btn-nexusmods btn-lg text-uppercase" href="@NexusModsUrl" role="button">Log In via NexusMods</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public string AdministratorUrl => $"login-administrator{new Uri(_navigationManager.Uri).Query}";
+    public string NexusModsUrl => $"login-nexusmods{new Uri(_navigationManager.Uri).Query}";
+
+    private async void OnDemoLogin()
+    {
+        var result = await _backendApiClient.Authenticate("demo");
+        if (result is not null)
+        {
+            await _localStorage.SetItemAsStringAsync("token", result);
+            _navigationManager.NavigateTo(_navigationManager.QueryString("returnUrl") ?? "crash-reports-viewer", true);
+        }
+    }
+}

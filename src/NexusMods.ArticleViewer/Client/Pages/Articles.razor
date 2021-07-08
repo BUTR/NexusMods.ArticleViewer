@@ -1,0 +1,98 @@
+﻿@page "/articles"
+@using NexusMods.ArticleViewer.Client.Helpers
+@using NexusMods.ArticleViewer.Client.Models
+@attribute [Authorize]
+@inject NavigationManager _navigationManager
+@inject ILocalStorageService _localStorage
+@inject IHttpClientFactory _clientFactory
+@inject BackendAPIClient _backendApiClient
+
+<div class="card mb-3">
+    <h4 class="card-header">Articles</h4>
+    <div class="card-body">
+        @if (_articles is null!)
+        {
+            <div class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive-md">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Game Domain</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var article in _articles)
+                        {
+                        <tr>
+                            <td>
+                                <a>@article.Id</a>
+                            </td>
+                            <td>
+                                <a href="@article.Url">@article.Title</a>
+                            </td>
+                            <td>
+                                <a>@article.GameDomain</a>
+                            </td>
+                            <td>
+                                <a href="@article.AuthorUrl">@article.AuthorName</a>
+                            </td>
+                            <td>
+                                <a>@article.CreateDate</a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <Pagination Metadata="_pagingMetadata" Spread="5" SelectedPage="SelectedPage" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+
+    private string _token = default!;
+    private bool _isLoading;
+
+    private LinkModModel _model = new();
+    private List<ArticleModel> _articles = default!;
+    private int _pageNumber = 1;
+    private PagingMetadata _pagingMetadata = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _token = await _localStorage.GetItemAsStringAsync("token");
+        await GetArticles();
+    }
+
+    private async Task SelectedPage(int page)
+    {
+        _pageNumber = page;
+        await GetArticles();
+    }
+
+    private async Task GetArticles()
+    {
+        var response = await _backendApiClient.GetArticles(_token, _pageNumber);
+        if (response is not null)
+        {
+            _articles = response.Items.ToList();
+            _pagingMetadata = response.Metadata;
+        }
+    }
+}
