@@ -101,7 +101,7 @@ namespace NexusMods.ArticleViewer.Server
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SqlHelperInit sqlHelperInit)
         {
-            //_ = sqlHelperInit.CreateTablesIfNotExistAsync(CancellationToken.None);
+            _ = sqlHelperInit.CreateTablesIfNotExistAsync(CancellationToken.None);
 
             if (env.IsDevelopment())
             {
