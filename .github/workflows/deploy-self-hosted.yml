@@ -9,7 +9,7 @@ on:
 jobs:
   deploy:
     name: Deploy
-    runs-on: [self-hosted, Linux, Production, ARM64]
+    runs-on: ubuntu-latest
     steps:
     - name: multiple command
       uses: appleboy/ssh-action@master
