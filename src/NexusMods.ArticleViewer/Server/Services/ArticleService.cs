@@ -35,7 +35,7 @@ namespace NexusMods.ArticleViewer.Server.Services
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var policy = Policy.Handle<Exception>(ex => ex.GetType() != typeof(TaskCanceledException) || ex.GetType() != typeof(OperationCanceledException))
-                .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromMilliseconds(5000),
+                .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromMilliseconds(1000 * 60 * 60),
                     (ex, time) =>
                     {
                         _logger.LogError(ex, "Exception during article processing. Retrying after {RetrySeconds} seconds", time.TotalSeconds);
