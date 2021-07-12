@@ -1,4 +1,6 @@
-﻿using HtmlAgilityPack;
+﻿using ComposableAsync;
+
+using HtmlAgilityPack;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,13 +11,13 @@ using NexusMods.ArticleViewer.Server.Models.Database;
 
 using Polly;
 
+using RateLimiter;
+
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ComposableAsync;
-using RateLimiter;
 
 namespace NexusMods.ArticleViewer.Server.Services
 {
@@ -36,7 +38,7 @@ namespace NexusMods.ArticleViewer.Server.Services
                 .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromMilliseconds(5000),
                     (ex, time) =>
                     {
-                        _logger.LogError(ex, "Exception during asko queue processing. Retrying after {retrySeconds} seconds.", time.TotalSeconds);
+                        _logger.LogError(ex, "Exception during article processing. Retrying after {RetrySeconds} seconds", time.TotalSeconds);
                     });
 
             //var timeLimiter = TimeLimiter.GetFromMaxCountByInterval(30, TimeSpan.FromSeconds(1));
@@ -113,7 +115,7 @@ namespace NexusMods.ArticleViewer.Server.Services
                 }, stoppingToken);
             }
 
-            _logger.LogWarning("Application requested service stopping!.");
+            _logger.LogWarning("Application requested service stopping!");
         }
     }
 }
