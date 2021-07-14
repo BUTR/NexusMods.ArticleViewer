@@ -48,7 +48,7 @@
                                 <a href="@article.AuthorUrl">@article.AuthorName</a>
                             </td>
                             <td>
-                                <a>@article.CreateDate</a>
+                                <a>@article.CreateDate.ToLocalTime().ToString("G")</a>
                             </td>
                         </tr>
                         }
