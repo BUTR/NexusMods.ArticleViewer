@@ -53,7 +53,7 @@ namespace NexusMods.ArticleViewer.Server.Services
                     var sqlHelperArticles = scope.ServiceProvider.GetRequiredService<SqlHelperArticles>();
 
                     var httpClientFactory = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>();
-                    var httpClient = httpClientFactory.CreateClient("NexusMods");
+                    using var httpClient = httpClientFactory.CreateClient("NexusMods");
 
                     var articleId = await sqlHelperArticles.GetLastIdAsync(token) ?? 1;
                     var notFoundArticles = 0;
@@ -63,7 +63,7 @@ namespace NexusMods.ArticleViewer.Server.Services
                     {
                         await timeLimiter;
 
-                        var response = await httpClient.GetAsync($"mountandblade2bannerlord/articles/{articleId}", token);
+                        using var response = await httpClient.GetAsync($"mountandblade2bannerlord/articles/{articleId}", token);
 
                         var doc = new HtmlDocument();
                         doc.Load(await response.Content.ReadAsStreamAsync(token));
