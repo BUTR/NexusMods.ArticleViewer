@@ -1,4 +1,4 @@
-using Community.Microsoft.Extensions.Caching.PostgreSql;
+﻿using Community.Microsoft.Extensions.Caching.PostgreSql;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 
 using NexusMods.ArticleViewer.Server.Helpers;
 using NexusMods.ArticleViewer.Server.Options;
+using NexusMods.ArticleViewer.Server.Services;
 
 using System;
 using System.Reflection;
@@ -17,7 +18,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
-using NexusMods.ArticleViewer.Server.Services;
 
 namespace NexusMods.ArticleViewer.Server
 {
@@ -75,7 +75,8 @@ namespace NexusMods.ArticleViewer.Server
                     };
                 });
 
-            services.AddControllers().AddJsonOptions(opts => {
+            services.AddControllers().AddJsonOptions(opts =>
+            {
                 opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));

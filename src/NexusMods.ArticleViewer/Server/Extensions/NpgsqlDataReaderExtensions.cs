@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Npgsql;
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Npgsql;
 
 namespace NexusMods.ArticleViewer.Server.Extensions
 {

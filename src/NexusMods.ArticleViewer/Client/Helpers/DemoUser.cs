@@ -1,6 +1,6 @@
-﻿using System;
-using NexusMods.ArticleViewer.Shared.Models;
+﻿using NexusMods.ArticleViewer.Shared.Models;
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

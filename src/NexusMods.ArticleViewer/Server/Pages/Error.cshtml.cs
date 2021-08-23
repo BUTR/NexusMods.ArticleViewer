@@ -1,7 +1,8 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+
+using System.Diagnostics;
 
 namespace NexusMods.ArticleViewer.Server.Pages
 {

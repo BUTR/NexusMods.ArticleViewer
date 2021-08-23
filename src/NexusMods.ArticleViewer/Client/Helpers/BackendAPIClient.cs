@@ -122,7 +122,7 @@ namespace NexusMods.ArticleViewer.Client.Helpers
                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 var httpClient = _httpClientFactory.CreateClient("Backend");
                 var response = await httpClient.SendAsync(request);
-                return response.IsSuccessStatusCode? await response.Content.ReadFromJsonAsync<PagingResponse<ArticleModel>>(JsonSerializerOptions) : null;
+                return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<PagingResponse<ArticleModel>>(JsonSerializerOptions) : null;
             }
             catch (Exception)
             {
