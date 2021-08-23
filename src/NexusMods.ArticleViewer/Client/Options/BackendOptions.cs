@@ -1,4 +1,4 @@
-namespace NexusMods.ArticleViewer.Client.Options
+﻿namespace NexusMods.ArticleViewer.Client.Options
 {
     public record BackendOptions
     {

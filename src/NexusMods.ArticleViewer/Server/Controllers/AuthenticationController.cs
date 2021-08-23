@@ -1,4 +1,18 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+
+using NexusMods.ArticleViewer.Server.Helpers;
+using NexusMods.ArticleViewer.Server.Models.NexusModsAPI;
+using NexusMods.ArticleViewer.Server.Options;
+using NexusMods.ArticleViewer.Shared.Helpers;
+using NexusMods.ArticleViewer.Shared.Models;
+using NexusMods.ArticleViewer.Shared.Models.API;
+
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -6,18 +20,6 @@ using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using NexusMods.ArticleViewer.Server.Helpers;
-using NexusMods.ArticleViewer.Server.Models.NexusModsAPI;
-using NexusMods.ArticleViewer.Server.Options;
-using NexusMods.ArticleViewer.Shared.Helpers;
-using NexusMods.ArticleViewer.Shared.Models;
-using NexusMods.ArticleViewer.Shared.Models.API;
 
 namespace NexusMods.ArticleViewer.Server.Controllers
 {

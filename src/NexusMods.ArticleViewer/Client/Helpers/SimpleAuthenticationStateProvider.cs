@@ -1,6 +1,9 @@
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
+
 using Microsoft.AspNetCore.Components.Authorization;
+
 using NexusMods.ArticleViewer.Shared.Helpers;
+
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -11,7 +14,7 @@ namespace NexusMods.ArticleViewer.Client.Helpers
     {
         private readonly ClaimsPrincipal _anonymous = new(new ClaimsIdentity());
         private readonly ClaimsPrincipal _authenticated = new(new ClaimsIdentity(Array.Empty<Claim>(), "NexusMods"));
-        private readonly ClaimsPrincipal _administrator = new(new ClaimsIdentity(new [] { new Claim(ClaimTypes.Role, ApplicationRoles.Administrator) }, "Standard"));
+        private readonly ClaimsPrincipal _administrator = new(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, ApplicationRoles.Administrator) }, "Standard"));
         private readonly ILocalStorageService _localStorage;
         private readonly BackendAPIClient _backendApiClient;
 

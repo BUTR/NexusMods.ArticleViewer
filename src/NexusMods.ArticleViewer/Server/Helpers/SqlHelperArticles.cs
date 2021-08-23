@@ -56,7 +56,7 @@ RETURNING *
         /// <summary>
         /// @offset, @limit
         /// </summary>
-        public static string ArticlesGetLastId= @"
+        public static string ArticlesGetLastId = @"
 SELECT
     id
 FROM
