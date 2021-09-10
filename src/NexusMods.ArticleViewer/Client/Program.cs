@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Blazored.SessionStorage;
 
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -29,7 +30,7 @@ namespace NexusMods.ArticleViewer.Client
                 services.Configure<BackendOptions>(builder.Configuration.GetSection("Backend"));
 
                 var assemblyName = Assembly.GetEntryAssembly()?.GetName();
-                var userAgent = $"{assemblyName?.Name ?? "NexusMods.ArticleViewer.Client"} v{Assembly.GetEntryAssembly()?.GetName().Version}";
+                var userAgent = $"{assemblyName?.Name} v{assemblyName?.Version}";
                 services.AddScoped(_ => new HttpClient
                 {
                     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
@@ -50,6 +51,7 @@ namespace NexusMods.ArticleViewer.Client
                 services.AddScoped<BackendAPIClient>();
 
                 services.AddBlazoredLocalStorage();
+                services.AddBlazoredSessionStorage();
 
                 services.AddAuthorizationCore();
                 services.AddScoped<AuthenticationStateProvider, SimpleAuthenticationStateProvider>();
