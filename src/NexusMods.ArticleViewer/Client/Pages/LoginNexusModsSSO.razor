@@ -110,7 +110,7 @@
                                 else
                                 {
                                     await _localStorage.SetItemAsStringAsync("token", result);
-                                    _navigationManager.NavigateTo(_navigationManager.QueryString("returnUrl") ?? "crash-reports-viewer", true);
+                                    _navigationManager.NavigateTo(_navigationManager.QueryString("returnUrl") ?? "articles", true);
                                 }
                             }
                             catch
