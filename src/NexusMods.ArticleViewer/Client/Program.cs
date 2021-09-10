@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using NexusMods.ArticleViewer.Client.Extensions;
 using NexusMods.ArticleViewer.Client.Helpers;
 using NexusMods.ArticleViewer.Client.Options;
+using NexusMods.ArticleViewer.Shared.Helpers;
 
 using System;
 using System.Net.Http;
@@ -43,6 +44,8 @@ namespace NexusMods.ArticleViewer.Client
                     client.BaseAddress = new Uri(backendOptions.Endpoint);
                     client.DefaultRequestHeaders.Add("User-Agent", userAgent);
                 });
+
+                services.AddSingleton<DefaultJsonSerializer>();
 
                 services.AddScoped<BackendAPIClient>();
 
