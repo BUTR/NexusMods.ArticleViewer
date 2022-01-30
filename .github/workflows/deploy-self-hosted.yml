@@ -24,7 +24,7 @@ jobs:
         #password: ${{ secrets.PASSWORD }}
         password: ${{ secrets.PASSWORD_2 }}
         #port: ${{ secrets.PORT }}
-        port: ${{ secrets.POR_2T }}
+        port: ${{ secrets.PORT_2 }}
         script: |
           docker image pull ghcr.io/butr/nexusmodsarticleviewer;
           docker stack deploy --prune --resolve-image always -c /deploy/articleviewer/docker-compose.yml articleviewer;
