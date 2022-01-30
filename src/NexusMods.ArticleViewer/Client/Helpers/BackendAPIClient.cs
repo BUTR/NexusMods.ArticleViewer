@@ -1,107 +1,40 @@
-﻿using NexusMods.ArticleViewer.Shared.Models;
-using NexusMods.ArticleViewer.Shared.Models.API;
+﻿using BUTR.NexusMods.Blazor.Core.Services;
+using BUTR.NexusMods.Shared.Models.API;
+
+using Microsoft.Extensions.Options;
+
+using NexusMods.ArticleViewer.Shared.Models;
 
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.Unicode;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NexusMods.ArticleViewer.Client.Helpers
 {
     public class BackendAPIClient
     {
-        private static JsonSerializerOptions JsonSerializerOptions { get; } = new()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            PropertyNameCaseInsensitive = true,
-            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
-        };
-
         private readonly IHttpClientFactory _httpClientFactory;
-        private DemoUser _demoUser = default!;
+        private readonly ITokenContainer _tokenContainer;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
+        private DemoUser? _demoUser;
 
-        public BackendAPIClient(IHttpClientFactory httpClientFactory)
+        public BackendAPIClient(IHttpClientFactory httpClientFactory, ITokenContainer tokenContainer, IOptions<JsonSerializerOptions> jsonSerializerOptions)
         {
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _tokenContainer = tokenContainer ?? throw new ArgumentNullException(nameof(tokenContainer));
+            _jsonSerializerOptions = jsonSerializerOptions.Value ?? throw new ArgumentNullException(nameof(jsonSerializerOptions));
         }
 
-        public async Task<string?> Authenticate(string apiKey, string? type = null)
+        public async Task<PagingResponse<ArticleModel>?> GetArticles(int page, CancellationToken ct = default)
         {
-            if (apiKey.Equals("demo", StringComparison.OrdinalIgnoreCase))
+            var tokenType = await _tokenContainer.GetTokenTypeAsync(ct);
+            if (tokenType?.Equals("demo", StringComparison.OrdinalIgnoreCase) == true)
             {
-                return "demo";
-            }
-
-            try
-            {
-                var request = new HttpRequestMessage(HttpMethod.Get, $"Authentication/Authenticate{(string.IsNullOrEmpty(type) ? string.Empty : $"?type={type}")}");
-                request.Headers.Add("apikey", apiKey);
-                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var httpClient = _httpClientFactory.CreateClient("Backend");
-                var response = await httpClient.SendAsync(request);
-                return response.IsSuccessStatusCode ? (await response.Content.ReadFromJsonAsync<JwtTokenResponse>(JsonSerializerOptions))?.Token : null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        public async Task<bool> Validate(string token)
-        {
-            if (token.Equals("demo", StringComparison.OrdinalIgnoreCase))
-            {
-                _demoUser ??= await DemoUser.Create();
-                return true;
-            }
-
-            try
-            {
-                var request = new HttpRequestMessage(HttpMethod.Get, "Authentication/Validate");
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var httpClient = _httpClientFactory.CreateClient("Backend");
-                var response = await httpClient.SendAsync(request);
-                return response.IsSuccessStatusCode;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        public async Task<ProfileModel?> GetProfile(string token)
-        {
-            if (token.Equals("demo", StringComparison.OrdinalIgnoreCase))
-            {
-                return _demoUser.Profile;
-            }
-
-            try
-            {
-                var request = new HttpRequestMessage(HttpMethod.Get, "Authentication/Profile");
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var httpClient = _httpClientFactory.CreateClient("Backend");
-                var response = await httpClient.SendAsync(request);
-                return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<ProfileModel>(JsonSerializerOptions) : null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        public async Task<PagingResponse<ArticleModel>?> GetArticles(string token, int page)
-        {
-            if (token.Equals("demo", StringComparison.OrdinalIgnoreCase))
-            {
+                _demoUser ??= await DemoUser.CreateAsync();
                 return new PagingResponse<ArticleModel>
                 {
                     Items = _demoUser.Articles,
@@ -115,14 +48,20 @@ namespace NexusMods.ArticleViewer.Client.Helpers
                 };
             }
 
+            var token = await _tokenContainer.GetTokenAsync(ct);
+            if (token is null)
+            {
+                return null;
+            }
+
             try
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, $"Articles?page={page}&pageSize={50}");
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 var httpClient = _httpClientFactory.CreateClient("Backend");
-                var response = await httpClient.SendAsync(request);
-                return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<PagingResponse<ArticleModel>>(JsonSerializerOptions) : null;
+                var response = await httpClient.SendAsync(request, ct);
+                return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<PagingResponse<ArticleModel>>(_jsonSerializerOptions, ct) : null;
             }
             catch (Exception)
             {
@@ -130,11 +69,18 @@ namespace NexusMods.ArticleViewer.Client.Helpers
             }
         }
 
-        public async Task<bool> RefreshMod(string token, string gameDomain, string modId)
+        public async Task<bool> RefreshMod(string gameDomain, string modId, CancellationToken ct = default)
         {
-            if (token.Equals("demo", StringComparison.OrdinalIgnoreCase))
+            var tokenType = await _tokenContainer.GetTokenTypeAsync(ct);
+            if (tokenType?.Equals("demo", StringComparison.OrdinalIgnoreCase) == true)
             {
                 return true;
+            }
+
+            var token = await _tokenContainer.GetTokenAsync(ct);
+            if (token is null)
+            {
+                return false;
             }
 
             try
@@ -143,7 +89,7 @@ namespace NexusMods.ArticleViewer.Client.Helpers
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 var httpClient = _httpClientFactory.CreateClient("Backend");
-                var response = await httpClient.SendAsync(request);
+                var response = await httpClient.SendAsync(request, ct);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception)

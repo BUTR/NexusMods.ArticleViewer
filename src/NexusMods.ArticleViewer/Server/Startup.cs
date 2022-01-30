@@ -1,23 +1,21 @@
-﻿using Community.Microsoft.Extensions.Caching.PostgreSql;
+﻿using BUTR.NexusMods.Server.Core.Extensions;
+using BUTR.NexusMods.Server.Core.Options;
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Community.Microsoft.Extensions.Caching.PostgreSql;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 
 using NexusMods.ArticleViewer.Server.Helpers;
-using NexusMods.ArticleViewer.Server.Options;
 using NexusMods.ArticleViewer.Server.Services;
 
 using System;
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
 
 namespace NexusMods.ArticleViewer.Server
 {
@@ -51,31 +49,15 @@ namespace NexusMods.ArticleViewer.Server
                 client.DefaultRequestHeaders.Add("User-Agent", userAgent);
             });
 
-            services.AddScoped<NexusModsAPIClient>();
             services.AddSingleton<SqlHelperInit>();
             services.AddSingleton<SqlHelperArticles>();
 
             services.AddHostedService<ArticleService>();
+            services.AddHostedService<SqlService>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    var jwtOptions = Configuration.GetSection(JwtSectionName).Get<JwtOptions>();
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = false,
-                        ValidateActor = false,
-                        ValidateTokenReplay = false,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SignKey)),
-                        TokenDecryptionKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.EncryptionKey)),
-                        ClockSkew = TimeSpan.FromMinutes(5),
-                    };
-                });
+            services.AddServerCore(Configuration, JwtSectionName);
 
-            services.AddControllers().AddJsonOptions(opts =>
+            services.AddControllers().AddServerCore().AddJsonOptions(opts =>
             {
                 opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
@@ -100,10 +82,8 @@ namespace NexusMods.ArticleViewer.Server
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SqlHelperInit sqlHelperInit)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            _ = sqlHelperInit.CreateTablesIfNotExistAsync(CancellationToken.None);
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using BUTR.NexusMods.Shared.Models.API;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using NexusMods.ArticleViewer.Server.Helpers;
 using NexusMods.ArticleViewer.Shared.Models;
-using NexusMods.ArticleViewer.Shared.Models.API;
 
 using System;
 using System.Linq;

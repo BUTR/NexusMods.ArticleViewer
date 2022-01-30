@@ -1,13 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31229.75
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NexusMods.ArticleViewer.Server", "NexusMods.ArticleViewer\Server\NexusMods.ArticleViewer.Server.csproj", "{7D4C0C44-5059-4ED5-9304-FF0A573EE023}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NexusMods.ArticleViewer.Client", "NexusMods.ArticleViewer\Client\NexusMods.ArticleViewer.Client.csproj", "{F076380C-E4D2-4ACB-821A-CB0ACE21E9CF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NexusMods.ArticleViewer.Shared", "NexusMods.ArticleViewer\Shared\NexusMods.ArticleViewer.Shared.csproj", "{273F664A-847C-429B-8A7D-FA83FCE8C2E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{BB3F6862-C18C-4DD4-85C7-4304C6C9D58F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6555D191-E024-4312-AD1B-CA36B6358610}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{C7B6F345-DFB1-45A8-9BD4-ABF42BD273C1}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\backend-docker.yml = ..\.github\workflows\backend-docker.yml
+		..\.github\workflows\deploy-self-hosted.yml = ..\.github\workflows\deploy-self-hosted.yml
+		..\.github\workflows\dotnet-format-daily.yml = ..\.github\workflows\dotnet-format-daily.yml
+		..\.github\workflows\frontend.yml = ..\.github\workflows\frontend.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +42,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7D4C0C44-5059-4ED5-9304-FF0A573EE023} = {6555D191-E024-4312-AD1B-CA36B6358610}
+		{F076380C-E4D2-4ACB-821A-CB0ACE21E9CF} = {6555D191-E024-4312-AD1B-CA36B6358610}
+		{273F664A-847C-429B-8A7D-FA83FCE8C2E1} = {6555D191-E024-4312-AD1B-CA36B6358610}
+		{6555D191-E024-4312-AD1B-CA36B6358610} = {BB3F6862-C18C-4DD4-85C7-4304C6C9D58F}
+		{C7B6F345-DFB1-45A8-9BD4-ABF42BD273C1} = {BB3F6862-C18C-4DD4-85C7-4304C6C9D58F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5CC1A63D-E570-4BEB-8282-0BD9B24B5C5C}
