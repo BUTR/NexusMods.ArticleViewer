@@ -5,7 +5,7 @@
 @inject IHttpClientFactory _clientFactory
 @inject BackendAPIClient _backendApiClient
 
-<div class="card mb-3">
+<div class="card mb-3 overflow-auto">
     <h4 class="card-header">Articles</h4>
     <div class="card-body">
         @if (_articles is null)
